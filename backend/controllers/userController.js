@@ -81,7 +81,7 @@ const loginUser = async (req, res)=>{
 const getProfile = async (req,res)=>{
     try {
         
-        const {userId} = req.body
+        const userId = req.userId
         const userData = await userModel.findById(userId).select('-password')
 
         return res.status(200).json({success:true,userData})
@@ -133,7 +133,13 @@ const updateProfile = async (req,res)=>{
 // api to book appointment
 const bookAppointment = async (req,res)=>{
   try {
-    const { userId, docId, slotDate, slotTime } = req.body
+    const {  docId, slotDate, slotTime } = req.body
+
+    const userId = req.userId
+
+    if (!userId) {
+      return res.status(401).json({ success:false, message:"Unauthorized" })
+    }
 
     const docData = await doctorModel.findById(docId).select('-password')
 
@@ -197,7 +203,7 @@ const bookAppointment = async (req,res)=>{
 const listAppointments = async (req,res)=>{
   try {
     
-    const {userId} = req.body
+    const userId = req.userId
     const appointments = await appointmentModel.find({userId})
 
     return res.status(200).json({success:true,appointments})

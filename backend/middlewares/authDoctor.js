@@ -1,33 +1,34 @@
-import jwt from 'jsonwebtoken'
-import appointmentModel from "../models/appointmentModel.js";
-// backend\models\appointmentModel.js
+import jwt from "jsonwebtoken"
+import doctorModel from "../models/doctorModel.js"
 
 const authDoctor = async (req, res, next) => {
   try {
-    const {dtoken} = req.headers 
 
-    if (!dtoken) {
+    const token = req.headers.dtoken   // ✅ from frontend
+
+    if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Not Authorized. Login Again'
+        message: "Not Authorized. Login Again"
       })
     }
 
-    const token_decode = jwt.verify(dtoken, process.env.JWT_SECRET)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-    console.log("req.body:", req.body);
-    console.log("req.doctor:", req.doctor);
+    const doctor = await doctorModel.findById(decoded.id).select("-password")
 
+    if (!doctor) {
+      return res.status(401).json({
+        success: false,
+        message: "Doctor not found"
+      })
+    }
 
-
-    req.doctor = {
-      docId: token_decode.id,
-    };
-
+    req.doctor = doctor    // ✅ attach doctor
     next()
 
   } catch (error) {
-    console.error(error)
+    console.log(error)
     return res.status(401).json({
       success: false,
       message: error.message

@@ -15,7 +15,15 @@ connectCloudinary()
 
 //middlewares
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://doctor-appointment-eta-black.vercel.app",
+    "https://admin-doctor-kappa.vercel.app"
+  ],
+  credentials: true
+})) 
 
 //api endpoints
 app.use('/api/admin',adminRouter)

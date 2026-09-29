@@ -4,7 +4,7 @@ import doctorModel from "../models/doctorModel.js"
 const authDoctor = async (req, res, next) => {
   try {
 
-    const token = req.headers.dtoken   // ✅ from frontend
+    const token = req.headers.dtoken   //  from frontend
 
     if (!token) {
       return res.status(401).json({
@@ -24,7 +24,7 @@ const authDoctor = async (req, res, next) => {
       })
     }
 
-    req.doctor = doctor    // ✅ attach doctor
+    req.doctor = doctor    //  attach doctor
     next()
 
   } catch (error) {
